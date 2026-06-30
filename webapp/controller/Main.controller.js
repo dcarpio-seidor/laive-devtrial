@@ -1,13 +1,52 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
-    "sap/m/MessageToast"
-], (Controller, MessageToast) => {
+    "sap/m/MessageToast",
+    "sap/ui/table/Column",
+    "sap/m/Label",
+    "sap/m/HBox",
+    "sap/m/Button"
+], (Controller, MessageToast, Column, Label, HBox, Button) => {
     "use strict";
 
     return Controller.extend("ns.laive.laivedevtrial.controller.Main", {
         onInit() {
             const oSmartTable = this.byId("LineItemsSmartTable");
+            oSmartTable.attachInitialise(this._addActionColumn, this);
+            oSmartTable.attachEvent("beforeRebind", this._onBeforeRebind, this);
             oSmartTable.attachInitialise(this._initFileDrop, this);
+        },
+
+        _onBeforeRebind() {
+            setTimeout(this._addActionColumn.bind(this), 0);
+        },
+
+        _addActionColumn() {
+            const oSmartTable = this.byId("LineItemsSmartTable");
+            const oTable = oSmartTable.getTable();
+            if (!oTable) {
+                setTimeout(this._addActionColumn.bind(this), 200);
+                return;
+            }
+
+            if (oTable.getColumns().some(c => c.getId() === "actionColumn")) return;
+
+            const oColumn = new Column({
+                id: "actionColumn",
+                hAlign: "Center",
+                width: "250px",
+                label: new Label({ text: "Acciones" }),
+                template: new HBox({
+                    justifyContent: sap.m.FlexJustifyContent.SpaceEvenly,
+                    alignItems: sap.m.FlexAlignItems.Center,
+                    items: [
+                        new Button({ text: "Agregar", type: "Transparent", press: this.onAgregar.bind(this) }),
+                        new Button({ text: "Eliminar", type: "Transparent", press: this.onEliminar.bind(this) }),
+                        new Button({ text: "Visualizar", type: "Transparent", press: this.onVisualizar.bind(this) })
+                    ]
+                })
+            });
+
+            oTable.addColumn(oColumn);
         },
 
         _initFileDrop() {
@@ -114,6 +153,24 @@ sap.ui.define([
                 item: oItem,
                 productId: sProductId
             });
+        },
+
+        onAgregar(oEvent) {
+            const oCtx = oEvent.getSource().getBindingContext();
+            const sProductId = oCtx ? oCtx.getProperty("ProductID") : "?";
+            MessageToast.show("Agregar - Producto #" + sProductId);
+        },
+
+        onEliminar(oEvent) {
+            const oCtx = oEvent.getSource().getBindingContext();
+            const sProductId = oCtx ? oCtx.getProperty("ProductID") : "?";
+            MessageToast.show("Eliminar - Producto #" + sProductId);
+        },
+
+        onVisualizar(oEvent) {
+            const oCtx = oEvent.getSource().getBindingContext();
+            const sProductId = oCtx ? oCtx.getProperty("ProductID") : "?";
+            MessageToast.show("Visualizar - Producto #" + sProductId);
         }
     });
 });

@@ -39,9 +39,9 @@ sap.ui.define([
                     justifyContent: sap.m.FlexJustifyContent.SpaceEvenly,
                     alignItems: sap.m.FlexAlignItems.Center,
                     items: [
-                        new Button({ text: "Agregar", type: "Transparent", press: this.onAgregar.bind(this) }),
-                        new Button({ text: "Eliminar", type: "Transparent", press: this.onEliminar.bind(this) }),
-                        new Button({ text: "Visualizar", type: "Transparent", press: this.onVisualizar.bind(this) })
+                        new Button({ icon: "sap-icon://add", type: "Transparent", tooltip: "Agregar", press: this.onAgregar.bind(this) }),
+                        new Button({ icon: "sap-icon://delete", type: "Transparent", tooltip: "Eliminar", press: this.onEliminar.bind(this) }),
+                        new Button({ icon: "sap-icon://display", type: "Transparent", tooltip: "Visualizar", press: this.onVisualizar.bind(this) })
                     ]
                 })
             });

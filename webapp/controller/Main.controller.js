@@ -12,12 +12,28 @@ sap.ui.define([
         onInit() {
             const oSmartTable = this.byId("LineItemsSmartTable");
             oSmartTable.attachInitialise(this._addActionColumn, this);
-            oSmartTable.attachEvent("beforeRebind", this._onBeforeRebind, this);
+            // oSmartTable.attachEvent("beforeRebind", this._onBeforeRebind, this);
             oSmartTable.attachInitialise(this._initFileDrop, this);
         },
 
-        _onBeforeRebind() {
+        onBeforeRebind(oEvent) {
+            setTimeout(this._addActionCustomControl(oEvent), 0);
             setTimeout(this._addActionColumn.bind(this), 0);
+        },
+
+        _addActionCustomControl(oEvent) {
+            debugger;
+            var oBindingParams = oEvent.getParameter("bindingParams");
+            var oSmartFilterBar = this.byId("smartFilterBar");
+            
+            // Get the value of your custom control
+            var sCustomValue = this.byId("customInputField").getValue();
+
+            // Check if the value exists before creating the filter
+            if (sCustomValue) {
+                var oFilter = new sap.ui.model.Filter("QuantityPerUnit", sap.ui.model.FilterOperator.EQ, sCustomValue);
+                oBindingParams.filters.push(oFilter);
+            }
         },
 
         _addActionColumn() {
